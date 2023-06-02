@@ -1,6 +1,6 @@
 [package]
 name = "bionic-ebooks"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["ZePedroResende <j.p.resende68@gmail.com>"]
 edition = "2021"
 description = "Takes an EPUB file and generate a copy with bionic like font applied"
@@ -14,5 +14,5 @@ maintenance = { status = "passively-maintained" }
 
 [dependencies]
 regex = "1.8.1"
-zip = "0.6.6"
+zip = {version = "0.6.6", default-features = false, features = [ "deflate" ]}
 xmltree = "0.10.3"
