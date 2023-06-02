@@ -8,13 +8,14 @@ The Bionic Ebooks is a command-line tool, written in Rust, that takes an EPUB fi
 
 ### Install
 
-``` bash
+```bash
 cargo install --git https://github.com/ZePedroResende/bionic-ebooks
 bionic-ebooks <path-input.epub> <path-output.epub>
 ```
 
 ### Build
-``` bash
+
+```bash
 cargo build --release
 target/release/bionic-ebooks <path-input.epub> <path-output.epub>
 ```

@@ -34,7 +34,7 @@ impl EpubProcessor {
             let mut file = self.in_zip.by_index(i).unwrap();
             let mut buf = Vec::new();
             let _ = file.read_to_end(&mut buf);
-            let re = Regex::new(r"(.*html)$").unwrap();
+            let re = Regex::new(r".*html$").unwrap();
             if re.is_match(file.name()) {
                 buf = modify_xml(&buf);
             }
@@ -61,15 +61,19 @@ fn modify_xml(buf: &[u8]) -> Vec<u8> {
 fn mutate_text(element: &mut Element) {
     for node in element.children.iter_mut() {
         match node {
-            XMLNode::Element(ref mut elem) => mutate_text(elem),
+            XMLNode::Element(ref mut elem) => {
+                if elem.name != "b" {
+                    mutate_text(elem)
+                }
+            }
             XMLNode::Text(ref mut text) => {
                 let bionic: Vec<String> = text.split_whitespace().map(to_bionic).collect();
+                let joined = bionic.join(" ");
 
-                let bionic_string = format!("<bionic>{}</bionic>", bionic.join(" "));
+                let bionic_string = format!("<bionic> {} </bionic>", joined);
 
                 let bionic_element = Element::parse(bionic_string.as_bytes()).unwrap();
-                let text = bionic_element.clone();
-                *node = xmltree::XMLNode::Element(text.clone());
+                *node = xmltree::XMLNode::Element(bionic_element);
             }
             _ => (),
         }
@@ -78,11 +82,19 @@ fn mutate_text(element: &mut Element) {
 
 fn to_bionic(word: &str) -> String {
     let trimmed_word = word.trim().replace('&', "&amp;");
-    let mid_point = trimmed_word.len() / 2;
     let chars: Vec<char> = trimmed_word.chars().collect();
+    let mid_point = chars.len() / 2;
 
-    if chars.is_empty() || mid_point >= chars.len() {
-        return format!("<b>{}</b>", trimmed_word);
+    if mid_point >= chars.len() || chars.is_empty() {
+        return trimmed_word;
+    }
+
+    if chars.len() == 1 {
+        return if chars[0].is_ascii() {
+            format!("<b>{} </b>", trimmed_word)
+        } else {
+            trimmed_word
+        };
     }
 
     let (bold, remaining) = chars.split_at(mid_point);
