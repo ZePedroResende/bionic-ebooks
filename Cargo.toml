@@ -1,7 +1,14 @@
 [package]
 name = "bionic-ebooks"
 version = "0.1.0"
+authors = ["ZePedroResende <j.p.resende68@gmail.com>"]
 edition = "2021"
+description = "Takes an EPUB file and generate a copy with bionic like font applied"
+repository = "https://github.com/ZePedroResende/bionic-ebooks"
+readme = "README.md"
+keywords = ["ebook", "epub", "bionic"]
+license = "MIT"
+maintenance = { status = "passively-maintained" }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
